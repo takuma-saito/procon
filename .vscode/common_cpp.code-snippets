@@ -10,7 +10,7 @@
 		"scope": "cpp",
 		"prefix": "init",
 		"body": [
-			"#include <bits/stdc++.h>\nusing namespace std;\n#define rep(i, n) for (int i = 0; i < (int)(n); i++)\n\nint main()\n{\n  \n}"
+			"#include <bits/stdc++.h>\nusing namespace std;\n#define rep(i, n) for (int i = 0; i < (int)(n); i++)\n\nint main()\n{\n\n}"
 		],
 		"description": "Init Snippet"
 	}
