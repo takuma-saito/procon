@@ -8,6 +8,7 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
+				"-I/usr/local/include",
 				"${file}",
 				"-o",
 				"${fileDirname}/${fileBasenameNoExtension}"
