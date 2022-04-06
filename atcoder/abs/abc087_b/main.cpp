@@ -1,18 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
-#define MAX_N 400
+#define MAX_N 1000
 int dp[MAX_N];
 
 int main()
 {
-    int A,B,C;
+    int A,B,C,X;
     cin >> A;
     cin >> B;
     cin >> C;
-    // rep(i, MAX_N) {
-    //     dp[i] += dp[i-10][a-1][b][c];
-    //     dp[i] += dp[i-5][a][b-1][c];
-    //     dp[i] += dp[i-1][a][b][c-1];
-    // }
+    cin >> X;
+    rep(i, A+1) {
+        rep(j, B+1) {
+            rep(k, C+1) {
+                dp[i*10+j*2+k] += 1;
+            }
+        }
+    }
+    cout << dp[X/50] << endl;
 }
