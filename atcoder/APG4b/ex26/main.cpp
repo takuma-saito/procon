@@ -94,13 +94,12 @@ void eval_print_vec() {
     vector<int> a = eval_vec_expr();
     while (true) {
         char op = read_char();
-        vector<int> b;
-        if (op == ';') { break; }
-        b = eval_vec_expr();
         if (op == '+') {
-            vec_plus(a, b);
+            vec_plus(a, eval_vec_expr());
         } else if (op == '-') {
-            vec_minus(a, b);
+            vec_minus(a, eval_vec_expr());
+        } else if (op == ';') {
+            // skip
         } else {
             runtime_error("unknwon operator: " + op);
         }
