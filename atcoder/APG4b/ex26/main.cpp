@@ -10,7 +10,8 @@ char read_char() {
     //cout << "DEBUG: " << ch << endl;
     return ch;
 }
-char expr_int_term() {
+
+int expr_int_term() {
     char ch = read_char();
     return (ch >= '0' && ch <= '9') ? ch - '0' : var_int.at(ch);
 }
@@ -44,7 +45,6 @@ void eval_int() {
 }
 
 void eval_print_int() {
-    char c;
     cout << eval_int_expr() << endl;
 }
 

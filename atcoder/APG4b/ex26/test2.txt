@@ -1,0 +1,4 @@
+3
+int e = 9 + 9 + 9 + 9 + 9 ;
+int z = e + e + e ;
+print_int z ;

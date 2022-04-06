@@ -15,7 +15,7 @@ int main()
         X.push_back(pair(a,b));
     }
     sort(X.begin(), X.end(), [](PINT x, PINT y) {
-        return x.second > y.second;
+        return x.second < y.second;
     });
     rep(i, N) {
         cout << X[i].first << " " << X[i].second << endl;
