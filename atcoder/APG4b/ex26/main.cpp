@@ -7,7 +7,7 @@ map<char, vector<int>> var_vec;
 char read_char() {
     char ch;
     cin >> ch;
-    cout << "DEBUG: " << ch << endl;
+    //cout << "DEBUG: " << ch << endl;
     return ch;
 }
 char expr_int_term() {
@@ -56,7 +56,7 @@ vector<int> eval_vec_expr() {
         return var_vec.at(ch);
     }
     while (true) {
-        vec.push_back(eval_int_expr()); // TODO 配列が空の場合は考慮していない
+        vec.push_back(expr_int_term()); // TODO 配列が空の場合は考慮していない
         char ch = read_char();
         if (ch == ',') {} else if (ch == ']') {
             break;
@@ -82,11 +82,11 @@ void eval_vec() {
     }
 }
 
-void vec_plus(vector<int>& a, vector<int>& b) {
+void vec_plus(vector<int>& a, vector<int> b) {
     rep(i, a.size()) { a[i] += b[i]; }
 }
 
-void vec_minus(vector<int>& a, vector<int>& b) {
+void vec_minus(vector<int>& a, vector<int> b) {
     rep(i, a.size()) {  a[i] -= b[i]; }
 }
 
@@ -99,18 +99,16 @@ void eval_print_vec() {
         } else if (op == '-') {
             vec_minus(a, eval_vec_expr());
         } else if (op == ';') {
-            // skip
+            break;
         } else {
             runtime_error("unknwon operator: " + op);
         }
     }
     cout << '[';
-    while (!a.empty()) {
-        cout << ' ';
-        cout << a.back();
-        a.pop_back();
+    rep(i, a.size()) {
+        cout << ' ' << a[i];
     }
-    cout << " ]";
+    cout << " ]" << endl;
 }
 
 int main()
