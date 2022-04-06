@@ -4,47 +4,52 @@ using namespace std;
 map<char, int> var_int;
 map<char, vector<int>> var_vec;
 
-int eval_int_expr() {
-    stack<int> stack;
+char read_char() {
     char ch;
-    while (ch != ';') {
-        cin >> ch;
+    cin >> ch;
+    //cout << "DEBUG: " << ch << endl;
+    return ch;
+}
+
+int eval_int_expr() {
+    int val;
+    char ch, op;
+    while (true) {
+        int x;
+        ch = read_char();
+        
         if (ch >= '0' && ch <= '9') {
-            stack.push(ch - '0');
-        } else if (ch == '+') {
-            char a = stack.top();
-            stack.pop();
-            char b = stack.top();
-            stack.pop();
-            stack.push(a + b);
-        } else if (ch == '-') {
-            char a = stack.top();
-            stack.pop();
-            char b = stack.top();
-            stack.pop();
-            stack.push(a-b);
+            x = ch - '0';
+        } else if (ch == '+' || ch == '-') {
+            op = ch;
+            continue;
+        } else if (ch == ';') {
+            break;
         } else {
-            stack.push(var_int.at(ch));
+            x = var_int.at(ch);
+        }
+
+        if (op == '+') { val += x; }
+        else if (op == '-') { val -= x; }
+        else {
+            runtime_error("unexpected: ch");
         }
     }
-    if (stack.size() != 1) {
-        runtime_error("invalid stack");
-    }
-    return stack.top();
+    return val;
 }
 
 void eval_int() {
     char ch, v;
-    cin >> ch;
+    ch = read_char();
     v = ch;
-    cin >> ch; // skip
+    ch = read_char();
     if (ch != '=') {
         runtime_error("execpted '='");
     }
-    var_int[v] = eval_int_expr();
+    var_int.insert_or_assign(v, eval_int_expr());
 }
 
-void print_int() {
+void eval_print_int() {
     char c;
     cout << eval_int_expr() << endl;
 }
@@ -52,81 +57,69 @@ void print_int() {
 vector<int> eval_vec_expr() {
     vector<int> vec;
     char ch;
-    cin >> ch;
+    ch = read_char();
     if (ch != '[') {
         return var_vec.at(ch);
     }
-    while (ch != ']') {
-        cin >> ch;
+    while (true) {
+        ch = read_char();
         if (ch >= '0' && ch <= '9') {
             vec.push_back(ch - '0');
         } else if (ch == ',') {
-            // skip
+            continue;
+        } else if (ch == ']') {
+            break;
         } else {
             vec.push_back(var_int.at(ch));
         }
-    }
-    if (vec.size() != 1) {
-        runtime_error("invalid vec");
     }
     return vec;
 }
 
 void eval_vec() {
     char ch, v;
-    cin >> ch;
+    ch = read_char();
     v = ch;
-    cin >> ch; // skip
+    ch = read_char(); // skip
     if (ch != '=') {
         runtime_error("execpted '='");
     }
-    var_vec.at(v) = eval_vec_expr();
-}
-
-void vec_plus(const vector<int> &a, vector<int> &b) {
-    if (a.empty()) {
-        rep(i, b.size()) { a.push_back(b[i]); }
-    } else {
-        rep(i, a.size()) {
-            a[i] += b[i];
-        }
+    var_vec.insert_or_assign(v, eval_vec_expr());
+    ch = read_char();
+    if (ch != ';') {
+        runtime_error("execpted ';'");
     }
 }
 
-void vec_minus(const vector<int> &a, vector<int> &b) {
-    if (a.empty()) {
-        rep(i, b.size()) { a=>push_back(-b[i]); }
-    } else {
-        rep(i, a.size()) {
-            a[i] -= b[i];
-        }
-    }
+void vec_plus(vector<int>& a, vector<int>& b) {
+    rep(i, a.size()) { a[i] += b[i]; }
+}
+
+void vec_minus(vector<int>& a, vector<int>& b) {
+    rep(i, a.size()) {  a[i] -= b[i]; }
 }
 
 void eval_print_vec() {
-    char ch;
-    vector<int> vec;
-    while (ch != ';') {
+    vector<int> a = eval_vec_expr();
+    while (true) {
         char op;
-        vector<int> a, b;
-        a = eval_vec_expr();
-        cin >> op;
+        vector<int> b;
+        op = read_char();
+        if (op == ';') { break; }
         b = eval_vec_expr();
         if (op == '+') {
-            vec_plus(&a, &b)
-            vec_plus(&val, &a)
+            vec_plus(a, b);
         } else if (op == '-') {
-            vec_minus(&a, &b)
-            vec_plus(&val, &a)
+            vec_minus(a, b);
         } else {
             runtime_error("unknwon operator: " + op);
         }
     }
     cout << '[';
-    while (!vec.empty()) {
+    while (!a.empty()) {
         cout << ' ';
-        cout << vec.back();
-        vec.pop_back();
+        cout << a.back();
+        a.pop_back();
     }
     cout << " ]";
 }
@@ -141,11 +134,11 @@ int main()
         if (op == "int") {
             eval_int();
         } else if (op == "print_int") {
-            //eval_print_int();
+            eval_print_int();
         } else if (op == "vec") {
-            //eval_vec();
+            eval_vec();
         } else if (op == "print_vec") {
-            //eval_print_vec();
+            eval_print_vec();
         } else {
             cout << "[Error] OP = "  << op << endl;
             exit(1);
