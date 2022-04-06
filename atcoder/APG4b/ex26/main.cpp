@@ -67,21 +67,6 @@ vector<int> eval_vec_expr() {
     return vec;
 }
 
-void eval_vec() {
-    char ch, v;
-    ch = read_char();
-    v = ch;
-    ch = read_char(); // skip
-    if (ch != '=') {
-        runtime_error("execpted '='");
-    }
-    var_vec.insert_or_assign(v, eval_vec_expr());
-    ch = read_char();
-    if (ch != ';') {
-        runtime_error("execpted ';'");
-    }
-}
-
 void vec_plus(vector<int>& a, vector<int> b) {
     rep(i, a.size()) { a[i] += b[i]; }
 }
@@ -90,7 +75,7 @@ void vec_minus(vector<int>& a, vector<int> b) {
     rep(i, a.size()) {  a[i] -= b[i]; }
 }
 
-void eval_print_vec() {
+vector<int> expr_vecs() {
     vector<int> a = eval_vec_expr();
     while (true) {
         char op = read_char();
@@ -104,6 +89,22 @@ void eval_print_vec() {
             runtime_error("unknwon operator: " + op);
         }
     }
+    return a;
+}
+
+void eval_vec() {
+    char ch, v;
+    ch = read_char();
+    v = ch;
+    ch = read_char(); // skip
+    if (ch != '=') {
+        runtime_error("execpted '='");
+    }
+    var_vec.insert_or_assign(v, expr_vecs());
+}
+
+void eval_print_vec() {
+    vector<int> a = expr_vecs();
     cout << '[';
     rep(i, a.size()) {
         cout << ' ' << a[i];
