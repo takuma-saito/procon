@@ -7,31 +7,25 @@ map<char, vector<int>> var_vec;
 char read_char() {
     char ch;
     cin >> ch;
-    //cout << "DEBUG: " << ch << endl;
+    cout << "DEBUG: " << ch << endl;
     return ch;
+}
+char expr_int_term() {
+    char ch = read_char();
+    return (ch >= '0' && ch <= '9') ? ch - '0' : var_int.at(ch);
 }
 
 int eval_int_expr() {
-    int val;
-    char ch, op;
+    int val = expr_int_term();
     while (true) {
-        int x;
-        ch = read_char();
-        
-        if (ch >= '0' && ch <= '9') {
-            x = ch - '0';
-        } else if (ch == '+' || ch == '-') {
-            op = ch;
-            continue;
-        } else if (ch == ';') {
+        char op = read_char();
+        if (op == '+') {
+            val += expr_int_term();
+        } else if (op == '-') {
+            val -= expr_int_term();
+        } else if (op == ';') {
             break;
         } else {
-            x = var_int.at(ch);
-        }
-
-        if (op == '+') { val += x; }
-        else if (op == '-') { val -= x; }
-        else {
             runtime_error("unexpected: ch");
         }
     }
@@ -62,15 +56,12 @@ vector<int> eval_vec_expr() {
         return var_vec.at(ch);
     }
     while (true) {
-        ch = read_char();
-        if (ch >= '0' && ch <= '9') {
-            vec.push_back(ch - '0');
-        } else if (ch == ',') {
-            continue;
-        } else if (ch == ']') {
+        vec.push_back(eval_int_expr()); // TODO 配列が空の場合は考慮していない
+        char ch = read_char();
+        if (ch == ',') {} else if (ch == ']') {
             break;
         } else {
-            vec.push_back(var_int.at(ch));
+            runtime_error("unknwon ch=" + ch); 
         }
     }
     return vec;
@@ -102,9 +93,8 @@ void vec_minus(vector<int>& a, vector<int>& b) {
 void eval_print_vec() {
     vector<int> a = eval_vec_expr();
     while (true) {
-        char op;
+        char op = read_char();
         vector<int> b;
-        op = read_char();
         if (op == ';') { break; }
         b = eval_vec_expr();
         if (op == '+') {
