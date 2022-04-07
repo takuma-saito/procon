@@ -11,21 +11,18 @@ int main()
     cin >> s;
     N = s.size();
     fill(dp, dp+MAX_N, false);
+    dp[N] = true;
     for(int i = N-1; i>=0; i--) {
         if (s.substr(i, 5) == "dream") {
-            if (i+5==N) {dp[i] = true;}
             dp[i] |= dp[i+5];
         }
         if (s.substr(i, 5) == "erase") {
-            if (i+5==N) {dp[i] = true;}
             dp[i] |= dp[i+5];
         }
         if (s.substr(i, 7) == "dreamer") {
-            if (i+7==N) {dp[i] = true;}
             dp[i] |= dp[i+7];
         }
         if (s.substr(i, 6) == "eraser") {
-            if (i+6==N) {dp[i] = true;}
             dp[i] |= dp[i+6];
         }
     }
