@@ -2,53 +2,49 @@
 using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
 
-// 考え方、{w, h, area} の 3 つをスタックで保存する
-// "/" のとき =>
-//       stack に要素があるとき => stack の先頭を見て、現在の高さより下の場合 pop して、面積を全部足す。
-//       合計の width, (合計の面積area)+flat, 現在の高さ height を再度 stack に push して次へ
-// "\" のとき => height--
-// "_" のとき => flat++
-
-struct Puddle { int area, height, width, flat; };
+struct Puddle { int area, height, l, r; };
 
 int main()
 {
     vector<Puddle> vec;
-    map<int, int> heights; // TODO
     string s; cin >> s;
-    int height = 0, flat = 0, max_area = 0;
-    for(int idx=0; idx<s.size(); idx++) {
-        char c = s[i];
-        if (c == '/') {
+    int height = 0, flat = 0, max_area = 0, max_height=0;
+    for(int i=0; i<s.size(); i++) {
+        char c=s[i];
+        if (c != '_') {flat=0;}
+        if (c == '/' && max_height == height) {
             height++;
-            int area = 0, area_width=0, _flat=0;
+        } else if (c == '/') {
+            height++;
+            int area=0, l=-1, r=0;
             while(!vec.empty()) {
                 Puddle& pud = vec.back();
-                if (pud.height >= height) {break;}
+                if (pud.height >= height) break;
+                if (l!=-1 && pud.r!=l) break;
                 vec.pop_back();
                 area += pud.area;
-                area_width += pud.width;
-                flat += pud.flat;
+                if(l==-1) {l=pud.l;}
+                r = pud.r;
             }
-            cout << area+area_width+flat+1 << " " << area << " " << area_width << " " << flat << endl;
-            while(s[idx++] == '_') {_flat++;} // TODO
-            idx--;
-            vec.push_back(Puddle {area+area_width+flat+1, height, area_width+flat+2, _flat});
-            flat = 0;
+            vec.push_back(Puddle {area+(r-l)+1, height, l-1, r+1});
         } else if (c == '_') {
-            heights[flat]++; // TODO
+            vec.push_back(Puddle {0, height, i, i+1});
         } else if (c == '\\') {
             height--;
         } else {
             runtime_error("unknown char: "+c);
         }
-    done:
-        rep(i, vec.size()) {printf("%d %d %d %d\n", vec[i].area, vec[i].height, vec[i].width, vec[i].flat);}
+        max_height = max(max_height, height);
+        rep(i, vec.size()) {printf("%d %d %d %d\n", vec[i].area, vec[i].height, vec[i].l, vec[i].r);}
         printf("%c: %d\n", c, vec.size());
         cout << endl;
     }
-    int sum = 0;
-    rep(i, vec.size()) {sum+=vec[i].area;}
+    int sum = 0, number_of_puddle=0;
+    rep(i, vec.size()) {sum+=vec[i].area; if(vec[i].area!=0) number_of_puddle++;}
     printf("%d\n", sum);
-    rep(i, vec.size()) {cout << vec[i].area << (i==vec.size()-1?"\n":" ");}
+    printf("%d ", number_of_puddle);
+    rep(i, vec.size()) {
+        if (vec[i].area == 0) continue;
+        cout << vec[i].area << (i==vec.size()-1?"\n":" ");
+    }
 }
