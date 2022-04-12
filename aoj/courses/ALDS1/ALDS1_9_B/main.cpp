@@ -1,17 +1,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
+const int MAX_A = 1<<31;
 const int MAX_N = 1<<22;
-const long int INF = (1 << 40);
-long int A[MAX_N];
+int n, A[MAX_N];
 
-void maxHeap(int n) {
-    int x = A[n], l = A[2*n+1], r = A[2*n+2]; // TODO
-    if (l > ) 
+void maxHeapify(int x) {
+    int l = 2*x, r = 2*x+1, largest;
+    if (l <= n && A[x] < A[l]) largest = l;
+    else largest = x;
+    if (r <= n && A[largest] < A[r]) largest = r;
+    if (x == largest) return;
+    swap(A[x], A[largest]);
+    maxHeapify(largest);
+}
+
+void buildMaxHeap(int n) {
+    for(int i=n/2; i>0; i--) maxHeapify(i);
 }
 
 int main()
 {
-    int n; cin >> n;
-    fill((long int*)A, (long int*)A+MAX_N, -INF);
+    cin >> n; rep(i, n) {cin >> A[i+1];}
+    buildMaxHeap(n);
+    for(int i=1; i<=n; i++) printf(" %d", A[i]);
+    cout << endl;
 }
