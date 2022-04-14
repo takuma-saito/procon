@@ -3,14 +3,16 @@ using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
 int B[8][8];
 int n;
+int d[8][2] = {{1, -1}, {1, 0}, {1, 1}, {0, -1}, {0, 1}, {-1, -1}, {-1, 0}, {-1, 1}};
 
 bool solve(int x, int y, int cnt) {
     int t=min(x, y);
-    rep(i, 8) {
-        int u = x-t+i, v = y-t+i;
-        if (u==x&&v==y) continue;
-        if (u<8 && v<8 && B[u][v]) return false;
-        if ((i != x && B[i][y]) || (i != y && B[x][i])) return false;
+    for(int i=1; i<8; i++) {
+        for(auto [dx, dy]: d) {
+            int nx = x+dx*i, ny = y+dy*i;
+            if (nx < 0 || nx >= 8 || ny < 0 || ny >= 8) continue;
+            if (B[nx][ny]) return false;
+        }
     }
     B[x][y]++;
     if (cnt >= 8) return true;
