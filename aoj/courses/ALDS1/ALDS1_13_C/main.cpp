@@ -19,23 +19,28 @@ struct State {
         this->t = t;
         rep(i, N) rep(j, N) this->b[i][j] = b[i][j];
     }
+    uint64_t hash() {
+        uint64_t res = 0;
+        rep(i, N) rep(j, N) res += res * 107 + b[i][j];
+        return res;
+    }
     void dump() {
         rep(i, N) rep(j, N) printf("%d%s", b[i][j], j==N-1?"\n":" ");
     }
     bool operator<(const State& rhs) const
     {
-        if (d == rhs.d) t < rhs.t;
+        if (d == rhs.d) return t < rhs.t;
         return d < rhs.d;
     }
     bool operator>(const State& rhs) const
     {
-        if (d == rhs.d) t > rhs.t;
+        if (d == rhs.d) return t > rhs.t;
         return d > rhs.d;
     }
     bool operator==(const State& rhs) const
     {
         bool res=true;
-        rep(i, N) rep(j, N) res = res && (b[i][j] == rhs.b[i][j]);
+        rep(i, N) rep(j, N) res = (res && (b[i][j] == rhs.b[i][j]));
         return res;
     }
 };
@@ -51,7 +56,7 @@ int dist(B& b) {
 
 int main()
 {
-    map<State, bool> used;
+    map<uint64_t, bool> used;
     State s; rep(i, N) rep(j, N) cin >> s.b[i][j];
     priority_queue<State, vector<State>, greater<State>> pq;
     rep(i, NS-1) { x[i+1][0]=i/N; x[i+1][1]=i%N; }
@@ -67,13 +72,14 @@ int main()
         s.dump();
         cout << s.d << " " << s.t << endl;
         cout << endl;
-        //if (used.count(s)) continue;
-        //used[s] = true;
+        if (used[s.hash()]) continue;
+        used[s.hash()] = true;
         int x = -1, y = -1;
         rep(i, N) rep(j, N) if(s.b[i][j]==0) {x=i; y=j;}
         if (x==-1||y==-1) runtime_error("wrong");
         for(auto [dx, dy]: d) {
             if (x+dx>=N || x+dx<0 || y+dy>=N || y+dy<0) continue;
+            //printf("(%d, %d) => (%d, %d)\n", x, y, x+dx, y+dy);
             swap(s.b[x][y], s.b[x+dx][y+dy]);
             pq.push(State(dist(s.b), s.t+1, s.b));
             swap(s.b[x][y], s.b[x+dx][y+dy]);
