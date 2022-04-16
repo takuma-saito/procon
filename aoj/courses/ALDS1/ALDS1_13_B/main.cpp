@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
-const int N = 4;
-const int NS = 16;
+const int N = 3;
+const int NS = 9;
 typedef int B[N][N];
 int G[NS][2];
 struct State {
@@ -21,7 +21,7 @@ struct State {
     }
     uint64_t hash() {
         uint64_t res = 0;
-        rep(i, N) rep(j, N) res = (res << 4) | b[i][j];
+        rep(i, N) rep(j, N) res += res * 107 + b[i][j];
         return res;
     }
     void dump() {
@@ -29,11 +29,13 @@ struct State {
     }
     bool operator<(const State& rhs) const
     {
-        return (t+d) < (rhs.t+rhs.d);
+        if (t == rhs.t) return d < rhs.d;
+        return t < rhs.t;
     }
     bool operator>(const State& rhs) const
     {
-        return (t+d) > (rhs.t+rhs.d);
+        if (t == rhs.t) return d > rhs.d;
+        return t > rhs.t;
     }
     bool operator==(const State& rhs) const
     {
@@ -42,7 +44,7 @@ struct State {
         return res;
     }
 };
-int d[4][2] = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
+int d[4][2] = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 
 int dist(B& b) {
     int y[NS][2];
@@ -75,7 +77,7 @@ int main()
         // s.dump();
         // cout << s.d << " " << s.t << endl;
         // cout << endl;
-        if (used[s.hash()] || s.t>44) continue;
+        if (used[s.hash()]) continue;
         used[s.hash()] = true;
         int x = -1, y = -1;
         rep(i, N) rep(j, N) if(s.b[i][j]==0) {x=i; y=j;}
