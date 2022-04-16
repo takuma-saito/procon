@@ -14,17 +14,18 @@ void dfs(int parent, int n, int& d) {
     low[n] = ord[n];
     bool is_articulation = false;
     for (auto u: G[n]) {
-        if (u == parent) continue;
         if (!used[u]) {
             children++;
             dfs(n, u, d);
+            low[n] = min(low[n], low[u]);
+            is_articulation |= parent!=-1 && ord[n] <= low[u];
+        } else if (u != parent) {
+            low[n] = min(low[n], ord[u]);
         }
-        low[n] = min(low[n], low[u]);
-        is_articulation |= parent!=-1 && ord[n] <= low[u];
     }
     is_articulation |= (parent==-1 && children > 1);
     if (is_articulation) ans.push_back(n);
-    printf("%d %d %d\n", n, ord[n], low[n]);
+    //printf("%d %d %d\n", n, ord[n], low[n]);
 }
 
 int main()
