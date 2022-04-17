@@ -3,51 +3,40 @@ using namespace std;
 #define rep(i, n) for (int i = 0; i < (int)(n); i++)
 const int MAX_N = 10000;
 struct Edge {int to, cost;};
-struct Node {int parent, max_cost_root, max_cost;};
+struct Node {int parent, max_cost, parent_edge_cost;};
 typedef pair<int, int> P;
 vector<Edge> G[MAX_N];
-Node V[MAX_N]; // TODO: init
+Node V[MAX_N];
 
-void dfs(int n, int parent) {
-    Node node = {parent, 0};
+void dfs(int n, int parent, int parent_edge_cost) {
+    Node node = {parent, 0, parent_edge_cost};
     for(auto &e: G[n]) {
         if (e.to == parent) continue;
-        dfs(e.to, n);
-        node.max_cost_root = max(node.max_cost_root, V[e.to].max_cost_root + e.cost);
+        dfs(e.to, n, e.cost);
+        node.max_cost = max(node.max_cost, V[e.to].max_cost + e.cost);
     }
     V[n] = node;
+}
+
+int dfs2(int n, int from) {
+    int m = 0;
+    int parent = V[n].parent;
+    for (auto &e: G[n]) {
+        if (e.to != parent && e.to != from) m = max(m, V[e.to].max_cost+e.cost);
+    }
+    int val = max(m, parent!=-1 ? (dfs2(parent, n) + V[n].parent_edge_cost) : 0);
+    return val;
 }
 
 int main()
 {
     int N; cin >> N;
-    rep(i, N) {
+    rep(i, N-1) {
         int s, t, w; cin >> s >> t >> w;
         G[s].push_back({t, w});
         G[t].push_back({s, w});
     }
-    rep(i, MAX_N) V[i] = Node {-1, -1, -1};
-    dfs(0, -1);
-    V[0].max_cost = V[0].max_cost_root;
-    queue<int> que;
-    vector<P> ans;
-    for(auto &e: G[0]) que.push(e.to);
-    while (!que.empty()) {
-        int x = que.front(); que.pop();
-        int parent = V[x].parent;
-        int parent_edge_cost = 0, max_cost = 0;
-        for (auto &e: G[parent]) {
-            if (e.to == x) {
-                parent_edge_cost = e.cost;
-            } else max_cost = max(max_cost, V[e.to].max_cost_root);
-        }
-        max_cost += parent_edge_cost;
-        for (auto &e: G[x]) {
-            if (V[e.to].parent == x) continue;
-            max_cost = max(max_cost, V[e.to].max_cost_root);
-            que.push(e.to);
-        }
-        V[x].max_cost = max_cost;
-    }
-    rep(i, N) printf("%d\n", V[i].max_cost);
+    dfs(0, -1, 0);
+    printf("%d\n", V[0].max_cost);
+    for (int i=1; i<N; i++) printf("%d\n", dfs2(i, -1));
 }
