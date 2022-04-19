@@ -16,21 +16,19 @@ void dfs(int n, int parent) {
     dist[n] = max_cost;
 }
 
-// parent を除いた最大
-int dfs2(int n, int parent, int parent_cost) {
-  pair<int, int> m1 = {0, 0}, m2 = {0, 0};
+void dfs2(int n, int parent, int parent_cost) {
+    vector<int> vec;
+    vec.push_back(parent_cost);
     for (auto &e: G[n]) {
         if (e.to == parent) continue;
-        if (dist[e.to] > m1.first) m1 = {dist[e.to], e.to};
-        if (dist[e.to] > m2.first && m1.first > m2.first) m2 = {dist[e.to], e.to};
+        vec.push_back(dist[e.to]+e.cost);
     }
-    int max_cost = 0;
+    sort(vec.begin(), vec.end(), greater<int>{});
+    dist2[n] = vec[0];
     for(auto &e: G[n]) {
       if (e.to == parent) continue;
-      pair<int, int> p = dist[e.to] == m1.first ? m2 : m1;
-      max_cost = max(max_cost, dfs2(e.to, n, p.first+e.cost));
+      dfs2(e.to, n, (dist[e.to]+e.cost == vec[0] ? vec[1] : vec[0])+e.cost);
     }
-    return max_cost;
 }
 
 int main()
@@ -43,6 +41,5 @@ int main()
     }
     dfs(0, -1);
     dfs2(0, -1, 0);
-    dist2[0] = dist[0];
     rep(i, N) printf("%d\n", dist2[i]);
 }
