@@ -16,14 +16,14 @@ void dfs(int n, int parent) {
     dist[n] = max_cost;
 }
 
-void dfs2(int n, int parent, int parent_cost) {
-    printf("n = %d, parent = %d, parent_cost = %d\n", n, parent, parent_cost);
+int dfs2(int n, int parent, int parent_cost) {
     int max_cost = parent_cost;
     for (auto &e1: G[n]) {
         if (e1.to == parent) continue;
         int node_cost = parent_cost;
-        for(auto &e2: G[n]) if (e2.to != e1.to && e2.to == parent) node_cost = max(node_cost, dist[e2.to]+e2.cost);
-        max_cost = max(max_cost, dfs2(e1.to, n, node_cost+e1.cost));
+        for(auto &e2: G[n]) if (e2.to != e1.to && e2.to != parent) node_cost = max(node_cost, dist[e2.to]+e2.cost);
+        dfs2(e1.to, n, node_cost+e1.cost);
+        max_cost = max(max_cost, node_cost);
     }
     return dist2[n] = max_cost;
 }
@@ -38,7 +38,6 @@ int main()
     }
     dfs(0, -1);
     dfs2(0, -1, 0);
-    rep(i, N) printf("%d\n", dist[i]);
-    cout << endl;
+    dist2[0] = dist[0];
     rep(i, N) printf("%d\n", dist2[i]);
 }
