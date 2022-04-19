@@ -18,17 +18,13 @@ void dfs(int n, int parent) {
 
 void dfs2(int n, int parent, int parent_cost) {
     vector<int> vec;
-    vec.push_back(parent_cost);
     for (auto &e: G[n]) {
-        if (e.to == parent) continue;
-        vec.push_back(dist[e.to]+e.cost);
+        if (e.to == parent) vec.push_back(dist[e.to]+parent_cost);
+        else vec.push_back(dist[e.to]+e.cost);
     }
     sort(vec.begin(), vec.end(), greater<int>{});
     dist2[n] = vec[0];
-    for(auto &e: G[n]) {
-      if (e.to == parent) continue;
-      dfs2(e.to, n, (dist[e.to]+e.cost == vec[0] ? vec[1] : vec[0])+e.cost);
-    }
+    for(auto &e: G[n]) if (e.to != parent) dfs2(e.to, n, vec[dist[e.to]+e.cost==vec[0]]);
 }
 
 int main()
