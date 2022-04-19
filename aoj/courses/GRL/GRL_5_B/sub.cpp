@@ -18,14 +18,18 @@ void dfs(int n, int parent) {
 
 // parent を除いた最大
 int dfs2(int n, int parent, int parent_cost) {
-    int max_cost = 0;
-    for (auto &e1: G[n]) {
-        if (e1.to == parent) continue;
-        int node_cost = 0;
-        for(auto &e2: G[n]) if (e2.to != e1.to && e2.to != parent) { node_cost = max(node_cost, dist[e2.to]+e2.cost); }
-        max_cost = max(max_cost, dfs2(e1.to, n, node_cost+e1.cost)+e1.cost);
+  pair<int, int> m1 = {0, 0}, m2 = {0, 0};
+    for (auto &e: G[n]) {
+        if (e.to == parent) continue;
+        if (dist[e.to] > m1.first) m1 = {dist[e.to], e.to};
+        if (dist[e.to] > m2.first && m1.first > m2.first) m2 = {dist[e.to], e.to};
     }
-    dist2[n] = max(max_cost, parent_cost);
+    int max_cost = 0;
+    for(auto &e: G[n]) {
+      if (e.to == parent) continue;
+      pair<int, int> p = dist[e.to] == m1.first ? m2 : m1;
+      max_cost = max(max_cost, dfs2(e.to, n, p.first+e.cost));
+    }
     return max_cost;
 }
 
