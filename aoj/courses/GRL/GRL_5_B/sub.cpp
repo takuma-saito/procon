@@ -24,7 +24,7 @@ void dfs2(int n, int parent, int parent_cost) {
     }
     sort(vec.begin(), vec.end(), greater<int>{});
     dist2[n] = vec[0];
-    for(auto &e: G[n]) if (e.to != parent) dfs2(e.to, n, vec[dist[e.to]+e.cost==vec[0]]);
+    for(auto &e: G[n]) if (e.to != parent) dfs2(e.to, n, vec[(dist[e.to]+e.cost)==vec[0]]);
 }
 
 int main()
