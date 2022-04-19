@@ -16,16 +16,17 @@ void dfs(int n, int parent) {
     dist[n] = max_cost;
 }
 
+// parent を除いた最大
 int dfs2(int n, int parent, int parent_cost) {
-    int max_cost = parent_cost;
+    int max_cost = 0;
     for (auto &e1: G[n]) {
         if (e1.to == parent) continue;
-        int node_cost = parent_cost;
-        for(auto &e2: G[n]) if (e2.to != e1.to && e2.to != parent) node_cost = max(node_cost, dist[e2.to]+e2.cost);
-        dfs2(e1.to, n, node_cost+e1.cost);
-        max_cost = max(max_cost, node_cost);
+        int node_cost = 0;
+        for(auto &e2: G[n]) if (e2.to != e1.to && e2.to != parent) { node_cost = max(node_cost, dist[e2.to]+e2.cost); }
+        max_cost = max(max_cost, dfs2(e1.to, n, node_cost+e1.cost)+e1.cost);
     }
-    return dist2[n] = max_cost;
+    dist2[n] = max(max_cost, parent_cost);
+    return max_cost;
 }
 
 int main()
