@@ -4,7 +4,7 @@ using namespace std;
 const int MAX_N = 9;
 int qnum, pnum, N, P[MAX_N], Q[MAX_N], used[MAX_N];
 
-bool solve(int depth, int k, int& num, bool is_q, bool is_p) {
+bool solve(int depth, int& num, bool is_q, bool is_p) {
     if (depth==N) {
         num++;
         if (is_p) qnum=num;
@@ -14,7 +14,7 @@ bool solve(int depth, int k, int& num, bool is_q, bool is_p) {
     for(int i=0; i<N; i++) {
         if (used[i]) continue;
         used[i] = true;
-        if (solve(depth+1, k+1, num, is_q && (Q[k] == i+1), is_p && (P[k] == i+1))) return true;
+        if (solve(depth+1, num, is_q && (Q[depth] == i+1), is_p && (P[depth] == i+1))) return true;
         used[i] = false;
     }
     return false;
@@ -26,6 +26,6 @@ int main()
     rep(i, N) cin >> P[i];
     rep(i, N) cin >> Q[i];
     int num=0;
-    solve(0, 0, num, true, true);
+    solve(0, num, true, true);
     printf("%d\n", abs(qnum-pnum));
 }
