@@ -17,26 +17,27 @@ int main()
     int D = N/2;
 
     for(int i=1; i<(1<<D); i++) {
-        ll sw=0, sv=0; for(int j=0; j<D; j++) if ((1<<j) & i) {
+        ll sw=0, sv=0; for(int j=0; j<D; j++) if (i>>j&1) {
             sw += weight[j];
             sv += value[j];
         }
         vec.push_back({sw, sv});
     }
-    sort(vec.begin(), vec.end());
+    sort(vec.begin(), vec.end(), [](const P& l, const P& r) {
+        return l.first == r.first ? (l.second > r.second) : (l.second < r.second);
+    });
 
     int G = N-D;
     ll ans = 0;
     for(int i=1; i<(1<<G); i++) {
-        ll sw=0, sv=0; for(int j=0; j<G; j++) if ((1<<j) & i) {
+        ll sw=0, sv=0; for(int j=0; j<G; j++) if (i>>j&1) {
             sw += weight[D+j];
             sv += value[D+j];
         }
-
         auto it = lower_bound(vec.begin(), vec.end(),
             P{W-sw, -1}, [](const P& l, const P& r){ return l.first < r.first; });
         int idx = distance(vec.begin(), it);
-        ans = max(ans,sv+vec[idx].second);
+        ans = max(ans, sv+vec[idx].second);
     }
 
     printf("%lld\n", ans);
