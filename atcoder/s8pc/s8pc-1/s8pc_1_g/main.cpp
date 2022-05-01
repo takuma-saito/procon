@@ -15,7 +15,7 @@ P solve(int S, int v) {
         if (S>>u&1 || u==v) continue;
         auto [dist, route] = solve(S|(1<<u), u);
         ll now = dist+G[v][u].first;
-        if (G[v][u].second < now) continue;
+        if (G[v][u].second < now) continue; // 逆側から通って来る場合を考える・・
         if (now == res.first) res.second += route;
         else if (now < res.first) {
             res.first = now;
