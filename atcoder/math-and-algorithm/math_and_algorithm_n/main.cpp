@@ -8,7 +8,7 @@ int main()
     ll N; cin >> N;
     vector<ll> divs;
     for(ll i=2; i*i<=N; i++) {
-        while(!(N%i)) {
+        while(N%i==0) {
             divs.push_back(i);
             N /= i;
         }
