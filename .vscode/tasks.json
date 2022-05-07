@@ -7,6 +7,10 @@
 			"command": "/usr/local/bin/g++-11",
 			"args": [
 				"-fdiagnostics-color=always",
+				"-fsanitize=address",
+				"-fsanitize=undefined",
+				"-Wall",
+				"-Werror",
 				"-g",
 				"-I/usr/local/include",
 				"${file}",
